@@ -2,7 +2,7 @@
 ---
 ## Self-Driving Car Engineer Nanodegree Program
 
-<p align="center"><img src="mpc.gif"></p>
+<p align="center"><img src="mpc.gif" width="100%"></p>
 
 
 
