@@ -1,6 +1,7 @@
 # CarND Controls MPC
 ---
-Self-Driving Car Engineer Nanodegree Program
+## Self-Driving Car Engineer Nanodegree Program
+
 ![MPC GIF](mpc.gif)
 
 
