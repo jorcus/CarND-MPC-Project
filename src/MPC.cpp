@@ -6,8 +6,8 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 10;
-double dt = 0.1;
+size_t N = 12;
+double dt = 0.10;
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -21,7 +21,7 @@ double dt = 0.1;
 // This is the length from front to CoG that has a similar radius.
 const double Lf = 2.67;
 
-double ref_v = 77;
+double ref_v = 92;
 double ref_epsi = 0;
 double ref_cte = 0;
 
@@ -38,8 +38,8 @@ size_t delta_start = epsi_start + N;
 size_t a_start = delta_start + N - 1;
 
 AD<double> eval_poly(Eigen::VectorXd coeffs, AD<double> x) {
-  AD<double> res = 0.0;
-  for(int p = 0; p < coeffs.size(); p++) {
+  AD<double> res = 0.0
+;  for(int p = 0; p < coeffs.size(); p++) {
     res += coeffs[p] * CppAD::pow(x, p);
   }
   return res;
@@ -70,14 +70,14 @@ class FG_eval {
 
     // Cost based on the refernce state
     for(int t = 0; t < N; t++) {
-      fg[0] += .06 * CppAD::pow(vars[cte_start + t] - ref_cte, 2);
-      fg[0] += 50.0 * CppAD::pow(vars[epsi_start + t] - ref_epsi, 2);
+      fg[0] += .0175 * CppAD::pow(vars[cte_start + t] - ref_cte, 2);
+      fg[0] += 11.50 * CppAD::pow(vars[epsi_start + t] - ref_epsi, 2);
       fg[0] += 1.0 * CppAD::pow(vars[v_start + t] - ref_v, 2);
     }
 
     // Cost to minimize the use of the actuators
     for(int t = 0; t < N-1; t++) {
-      fg[0] += 1500.0 * CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += 1800.0 * CppAD::pow(vars[delta_start + t], 2);
       fg[0] += 1.0 * CppAD::pow(vars[a_start + t], 2);
     }
 
