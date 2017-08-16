@@ -4,7 +4,65 @@
 
 <p align="center"><img src="mpc.gif" width="100%"></p>
 
+## The Model
+### State
+  * x: x position
+  * y: y position
+  * psi: yaw angle 
+  * v: velocity/speed
+  * cte: cross track error
+  * epsi: psi error/yaw angle error
 
+### Actuators
+  * steer_angle: range of -1, 1
+  * at (acceleration): range of -0.3, 0.3
+
+### Model updates equation
+
+    x_[t] = x[t-1] + v[t-1] * cos(psi[t-1]) * dt
+    y_[t] = y[t-1] + v[t-1] * sin(psi[t-1]) * dt
+    psi_[t] = psi[t-1] + v[t-1] / Lf * delta[t-1] * dt
+    v_[t] = v[t-1] + a[t-1] * dt
+    cte[t] = f(x[t-1]) - y[t-1] + v[t-1] * sin(epsi[t-1]) * dt
+    epsi[t] = psi[t] - psides[t-1] + v[t-1] * delta[t-1] / Lf * dt
+
+
+### Timestep and Elapsed Duration (N & dt)
+
+The course is initiate in the followings:
+  * N = 25
+  * dt = 0.05 
+
+With implementation of the initiate of N and dt, the car was driving in unstable mode, when it's having a turn it was drove out the road . After serveral test, I found a larger value of N  will affect the simulation slow down because it need to have more computation and calculations. Finally, I found the best to solutions that can drive in 90 mph with increasing the dt to 0.1 and reducing the N to 12 as followings:
+  * N = 12
+  * dt = 0.1
+
+
+### Polynomial Fitting and MPC Preprocessing
+Preprocessing the waypoints simplifies the process of polynomial fit. This code example shows how the waypoints are preprocessed:
+```
+// First we convert to vehicle space
+Eigen::VectorXd ptsx_vehicle = Eigen::VectorXd::Map(ptsx.data(), ptsx.size());
+Eigen::VectorXd ptsy_vehicle = Eigen::VectorXd::Map(ptsy.data(), ptsy.size());
+
+for(int i = 0; i < ptsx_vehicle.size(); i++) {
+    double x = ptsx_vehicle[i] - px;
+    double y = ptsy_vehicle[i] - py;
+    ptsx_vehicle[i] = x * cos(psi) + y * sin(psi);
+    ptsy_vehicle[i] = - x * sin(psi) + y * cos(psi);
+}
+
+// Fit a polynomial to the above x and y coordinates
+auto coeffs = polyfit(ptsx_vehicle, ptsy_vehicle, 3);
+
+// Calculate the cross track error and orientation error
+double cte = polyeval(coeffs, 0);
+double epsi = -atan(coeffs[1]);
+
+// We create the vector for the current vector
+Eigen::VectorXd state(6);
+state << 0, 0, 0, v, cte, epsi; //x_vehicle, y_vehicle, psi_vehicle, v, cte, epsi;
+```
 
 
 ## Dependencies
