@@ -14,8 +14,8 @@
   * epsi: psi error/yaw angle error
 
 ### Actuators
-  * steer_angle: range of -1, 1
-  * at (acceleration): range of -0.3, 0.3
+  * steering angle : steering angle of the vehicle in range of [-25°, 25°]
+  * throttle : acceloration from full break to full throttle in the range of [-1, 1]
 
 ### Model updates equation
 
